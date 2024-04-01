@@ -1,31 +1,24 @@
 <template>
-  <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
+  <div v-if="event">
+    <h1>{{ event.title }}</h1>
+    <p>{{ event.time }} on {{ event.date }} @ {{ event.location }}</p>
+    <p>{{ event.description }}</p>
   </div>
 </template>
 
 <script>
-import EventCard from '@/components/EventCard.vue'
 import EventService from '@/services/EventService.js'
-// import axios from 'axios'
-
 export default {
-  name: 'EventList',
-  components: {
-    EventCard
-  },
+  props: ['id'],
   data() {
     return {
-      events: null
+      event: null
     }
   },
   created() {
-    EventService.getEvents()
-      // .get(
-      //   'https://my-json-server.typicode.com/Code-Pop/Real-World_Vue-3/events'
-      // )
+    EventService.getEvent(this.id)
       .then(response => {
-        this.events = response.data
+        this.event = response.data
       })
       .catch(error => {
         console.log(error)
@@ -33,11 +26,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.events {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style>
