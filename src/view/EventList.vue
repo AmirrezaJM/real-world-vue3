@@ -1,28 +1,32 @@
+<script setup>
+import EventCard from "@/components/EventCard.vue";
+import EventService from "@/services/EventService.js";
+import { onMounted, ref } from "vue";
+
+const events = ref("");
+
+onMounted(() => {
+  EventService.getEvents()
+    .then((response) => {
+      events.value = response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+</script>
+
 <template>
-  <div v-if="event">
-    <h1>{{ event.title }}</h1>
-    <p>{{ event.time }} on {{ event.date }} @ {{ event.location }}</p>
-    <p>{{ event.description }}</p>
+  <h1>Events for Good</h1>
+  <div class="events">
+    <EventCard v-for="event in events" :key="event.id" :event="event" />
   </div>
 </template>
 
-<script>
-import EventService from '@/services/EventService.js'
-export default {
-  props: ['id'],
-  data() {
-    return {
-      event: null
-    }
-  },
-  created() {
-    EventService.getEvent(this.id)
-      .then(response => {
-        this.event = response.data
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }
+<style scoped>
+.events {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-</script>
+</style>
